@@ -1,6 +1,7 @@
 ﻿using BookStore.DataAccess.Data;
 using BookStore.DataAccess.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,19 +32,37 @@ namespace BookStore.DataAccess.Repository
             await _dbSet.AddRangeAsync(entities);
         }
 
-        public async Task<IEnumerable<T>> GetAll(Expression<Func<T, bool>> predicate = null)
+        public async Task<IEnumerable<T>> GetAll(Expression<Func<T, bool>> predicate = null, 
+            Func<IQueryable<T>, IIncludableQueryable<T, object>> includes = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null)
         {
             IQueryable<T> query = _dbSet;
             if(predicate != null)
             {
                 query = query.Where(predicate);
             }
+            if (includes != null)
+            {
+                query = includes(query);
+            }
+            if (orderBy != null)
+            {
+                query = orderBy(query);
+            }
             return await query.ToListAsync();
         }
 
-        public async Task<T> GetFirstOrDefault(Expression<Func<T, bool>> predicate)
+        public async Task<T> GetFirstOrDefault(Expression<Func<T, bool>> predicate, Func<IQueryable<T>, 
+            IIncludableQueryable<T, object>> includes = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null)
         {
             IQueryable<T> query = _dbSet;
+            if (includes != null)
+            {
+                query = includes(query);
+            }
+            if (orderBy != null)
+            {
+                query = orderBy(query);
+            }
             return await query.FirstOrDefaultAsync(predicate);
         }
 

@@ -42,7 +42,7 @@ namespace BookStoreWeb.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Authors");
+                    b.ToTable("Authors", (string)null);
                 });
 
             modelBuilder.Entity("BookStore.Models.DomainModels.DbModels.Category", b =>
@@ -65,7 +65,7 @@ namespace BookStoreWeb.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("BookStore.Models.DomainModels.DbModels.CoverType", b =>
@@ -83,7 +83,7 @@ namespace BookStoreWeb.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CoverTypes");
+                    b.ToTable("CoverTypes", (string)null);
                 });
 
             modelBuilder.Entity("BookStore.Models.DomainModels.DbModels.Product", b =>
@@ -139,7 +139,7 @@ namespace BookStoreWeb.Migrations
 
                     b.HasIndex("CoverTypeId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("BookStore.Models.DomainModels.DbModels.Product", b =>

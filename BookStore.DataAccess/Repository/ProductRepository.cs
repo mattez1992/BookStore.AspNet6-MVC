@@ -18,9 +18,26 @@ namespace BookStore.DataAccess.Repository
             _dbContext = dbContext;
         }
 
-        public Task Update(Product product)
+        public Task Update(Product editedProduct)
         {
-            _dbContext.Products.Update(product);
+            var productTOEdit = _dbContext.Products.FirstOrDefault(u => u.Id == editedProduct.Id);
+            if (productTOEdit != null)
+            {
+                productTOEdit.Title = editedProduct.Title;
+                productTOEdit.ISBN = editedProduct.ISBN;
+                productTOEdit.Price = editedProduct.Price;
+                productTOEdit.Price50 = editedProduct.Price50;
+                productTOEdit.ListPrice = editedProduct.ListPrice;
+                productTOEdit.Price100 = editedProduct.Price100;
+                productTOEdit.Description = editedProduct.Description;
+                productTOEdit.CategoryId = editedProduct.CategoryId;
+                productTOEdit.AuthorId = editedProduct.AuthorId;
+                productTOEdit.CoverTypeId = editedProduct.CoverTypeId;
+                if (editedProduct.ImageUrl != null)
+                {
+                    productTOEdit.ImageUrl = editedProduct.ImageUrl;
+                }
+            }
             return Task.CompletedTask;
         }
     }

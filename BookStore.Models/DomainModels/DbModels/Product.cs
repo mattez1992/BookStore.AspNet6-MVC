@@ -18,6 +18,7 @@ namespace BookStore.Models.DomainModels.DbModels
         public string ISBN { get; set; }
         [ForeignKey(nameof(Author))]
         public int AuthorId { get; set; }
+        [ValidateNever]
         public Author Author { get; set; }
         [Required]
         [Range(1, 10000)]
