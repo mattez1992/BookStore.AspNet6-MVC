@@ -1,12 +1,7 @@
-﻿using BookStoreWeb.Models.DbModels;
+﻿using BookStore.Models.DomainModels.DbModels;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace BookStoreWeb.Data
+namespace BookStore.DataAccess.Data
 {
     public class ApplicationDbContext : DbContext
     {
@@ -15,5 +10,6 @@ namespace BookStoreWeb.Data
 
         }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<CoverType> CoverTypes { get; set; }
     }
 }
