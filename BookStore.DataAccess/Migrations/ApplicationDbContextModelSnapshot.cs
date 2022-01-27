@@ -36,13 +36,12 @@ namespace BookStoreWeb.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("LastName")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Authors", (string)null);
+                    b.ToTable("Authors");
                 });
 
             modelBuilder.Entity("BookStore.Models.DomainModels.DbModels.Category", b =>
@@ -65,7 +64,7 @@ namespace BookStoreWeb.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("BookStore.Models.DomainModels.DbModels.CoverType", b =>
@@ -83,7 +82,7 @@ namespace BookStoreWeb.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CoverTypes", (string)null);
+                    b.ToTable("CoverTypes");
                 });
 
             modelBuilder.Entity("BookStore.Models.DomainModels.DbModels.Product", b =>
@@ -139,7 +138,7 @@ namespace BookStoreWeb.Migrations
 
                     b.HasIndex("CoverTypeId");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("BookStore.Models.DomainModels.DbModels.Product", b =>

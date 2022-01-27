@@ -32,6 +32,7 @@
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" asp-area="Admin" asp-controller="Category" asp-action="Index">Category Index</a>
                                 <a class="dropdown-item" asp-area="Admin" asp-controller="CoverType" asp-action="Index">Cover Type Index</a>
+                                <a class="dropdown-item" asp-area="Admin" asp-controller="Author" asp-action="Index">Author Index</a>
                                  <a class="dropdown-item" asp-area="Admin" asp-controller="Product" asp-action="Index">Product Index</a>
                                 <div class="dropdown-divider"></div>
                             </div>
@@ -64,6 +65,8 @@
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="//cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+	  <script src="https://cdn.tiny.cloud/1/72y1i886f7g5m56ij4oxrhv8g932gz9rq2a6i2rinlonrk1t/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

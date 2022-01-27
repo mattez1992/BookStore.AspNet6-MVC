@@ -23,3 +23,12 @@ body {
     white-space: nowrap;
     line-height: 60px;
 }
+
+.h450{
+    height:450px;
+    width:auto;
+}
+
+.h650{
+    height:650px;
+}

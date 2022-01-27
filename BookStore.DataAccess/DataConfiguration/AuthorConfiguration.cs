@@ -15,7 +15,7 @@ namespace BookStore.DataAccess.DataConfiguration
         {
             builder.HasKey(x => x.Id);
             builder.Property(x => x.FirstName).IsRequired().HasMaxLength(50);
-            builder.Property(x => x.LastName).IsRequired().HasMaxLength(50);
+            builder.Property(x => x.LastName).HasMaxLength(50);
             builder.Ignore(x => x.FullName);
         }
     }

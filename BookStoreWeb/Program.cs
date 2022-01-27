@@ -3,6 +3,7 @@ using BookStore.DataAccess.Repository;
 using BookStore.DataAccess.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +12,9 @@ builder.Services.AddControllersWithViews().AddJsonOptions(opt => opt.JsonSeriali
 builder.Services.AddDbContext<ApplicationDbContext>(opt => opt.UseSqlServer(
     builder.Configuration.GetConnectionString("DefaultConnection")
     ));
-builder.Services.AddRazorPages();
+builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddEntityFrameworkStores<ApplicationDbContext>();
+
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 var app = builder.Build();
@@ -28,7 +31,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

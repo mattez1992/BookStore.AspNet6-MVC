@@ -112,7 +112,7 @@ namespace BookStoreWeb.Areas.Admin.Controllers
             }
         }
 
-        #region API CALLS
+        #region API Endpoints
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
