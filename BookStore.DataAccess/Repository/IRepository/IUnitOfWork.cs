@@ -12,6 +12,7 @@ namespace BookStore.DataAccess.Repository.IRepository
         IBookCoverRepository BookCovers { get; }
         IProductRepository Products { get; }
         IAuthorRepository Authors { get; }
+        ICompanyRepository Companies { get; }
         Task<int> SaveAsync();
     }
 }

@@ -20,12 +20,15 @@ namespace BookStore.DataAccess.Repository
 
         public IAuthorRepository Authors { get; private set; }
 
+        public ICompanyRepository Companies { get; private set; }
+
         public UnitOfWork(ApplicationDbContext dbContext)
         {
             Categories = new CategoryRepository(dbContext);
             BookCovers = new BookCoverRepository(dbContext);
             Products = new ProductRepository(dbContext);
             Authors = new AuthorRepository(dbContext);
+            Companies = new CompnayRepository(dbContext);
             _dbContext = dbContext;
         }
 

@@ -10,12 +10,17 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
+using BookStore.DataAccess.Repository.IRepository;
+using BookStore.Models.DomainModels.DbModels;
+using BookStore.Utils;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 
@@ -25,6 +30,8 @@ namespace BookStoreWeb.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IUnitOfWork _dbContext;
         private readonly IUserStore<IdentityUser> _userStore;
         private readonly IUserEmailStore<IdentityUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
@@ -35,7 +42,9 @@ namespace BookStoreWeb.Areas.Identity.Pages.Account
             IUserStore<IdentityUser> userStore,
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender, 
+            RoleManager<IdentityRole> roleManager,
+            IUnitOfWork dbContext)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -43,6 +52,8 @@ namespace BookStoreWeb.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _roleManager = roleManager;
+            _dbContext = dbContext;
         }
 
         /// <summary>
@@ -97,13 +108,51 @@ namespace BookStoreWeb.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+            // Custom Fields from ApplicationUserClass
+            [Required]
+            public string Name { get; set; }
+            [Display(Name = "Street Address")]
+            public string? StreetAdess { get; set; }
+            public string? City { get; set; }
+            [Display(Name = "Zip Code")]
+            public string? ZipCode { get; set; }
+            [Display(Name = "Phone Number")]
+            public string? PhoneNumber { get; set; }
+            public string? Role { get; set; }
+            public int? CompanyId { get; set; }
+            [ValidateNever]
+            public IEnumerable<SelectListItem> Roles { get; set; }
+            [ValidateNever]
+            public IEnumerable<SelectListItem> Companies { get; set; }
         }
 
 
         public async Task OnGetAsync(string returnUrl = null)
         {
+            if (!_roleManager.RoleExistsAsync(Constants.Role_User_Admin).GetAwaiter().GetResult())
+            {
+                await _roleManager.CreateAsync(new IdentityRole(Constants.Role_User_Admin));
+                await _roleManager.CreateAsync(new IdentityRole(Constants.Role_User_Employee));
+                await _roleManager.CreateAsync(new IdentityRole(Constants.Role_User_Private_Customer));
+                await _roleManager.CreateAsync(new IdentityRole(Constants.Role_User_Company_Customer));
+            }
+            
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            Input = new InputModel()
+            {
+                Roles = _roleManager.Roles.Select(x => x.Name).Select(i => new SelectListItem
+                {
+                    Text = i,
+                    Value = i
+                }),
+                Companies = (await _dbContext.Companies.GetAll()).Select(x => new SelectListItem
+                {
+                    Text = x.CompanyName,
+                    Value = x.Id.ToString()
+                })
+            };
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
@@ -116,11 +165,31 @@ namespace BookStoreWeb.Areas.Identity.Pages.Account
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+
+                // manually add custom fields to user from innput model
+                user.StreetAdess = Input.StreetAdess;
+                user.City = Input.City;
+                user.ZipCode = Input.ZipCode;
+                user.Name = Input.Name;
+                user.PhoneNumber = Input.PhoneNumber;
+                if(Input.Role == Constants.Role_User_Company_Customer)
+                {
+                    user.CompanyId = Input.CompanyId;
+                }
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
+
+                    if(Input.Role == null)
+                    {
+                        await _userManager.AddToRoleAsync(user, Constants.Role_User_Private_Customer);
+                    }
+                    else
+                    {
+                        await _userManager.AddToRoleAsync(user, Input.Role);
+                    }
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -154,16 +223,17 @@ namespace BookStoreWeb.Areas.Identity.Pages.Account
             return Page();
         }
 
-        private IdentityUser CreateUser()
+        private ApplicationUser CreateUser()
         {
             try
             {
-                return Activator.CreateInstance<IdentityUser>();
+                // change IdentityUser to extension class ApplicationUser
+                return Activator.CreateInstance<ApplicationUser>();
             }
             catch
             {
-                throw new InvalidOperationException($"Can't create an instance of '{nameof(IdentityUser)}'. " +
-                    $"Ensure that '{nameof(IdentityUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
+                throw new InvalidOperationException($"Can't create an instance of '{nameof(ApplicationUser)}'. " +
+                    $"Ensure that '{nameof(ApplicationUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
                     $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
             }
         }

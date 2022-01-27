@@ -1,5 +1,6 @@
 ﻿
 using BookStore.DataAccess.Repository.IRepository;
+using BookStore.Models.DomainModels.DbModels;
 using BookStore.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
