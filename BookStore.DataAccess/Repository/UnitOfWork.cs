@@ -22,6 +22,8 @@ namespace BookStore.DataAccess.Repository
 
         public ICompanyRepository Companies { get; private set; }
 
+        public IShoppingCartItemRepository ShoppingCartItems { get; private set; }
+
         public UnitOfWork(ApplicationDbContext dbContext)
         {
             Categories = new CategoryRepository(dbContext);
@@ -29,6 +31,7 @@ namespace BookStore.DataAccess.Repository
             Products = new ProductRepository(dbContext);
             Authors = new AuthorRepository(dbContext);
             Companies = new CompnayRepository(dbContext);
+            ShoppingCartItems = new ShoppingCartItemRepository(dbContext);
             _dbContext = dbContext;
         }
 

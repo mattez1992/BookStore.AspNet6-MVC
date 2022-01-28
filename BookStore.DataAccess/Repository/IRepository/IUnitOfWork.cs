@@ -13,6 +13,7 @@ namespace BookStore.DataAccess.Repository.IRepository
         IProductRepository Products { get; }
         IAuthorRepository Authors { get; }
         ICompanyRepository Companies { get; }
+        IShoppingCartItemRepository ShoppingCartItems { get; }
         Task<int> SaveAsync();
     }
 }
